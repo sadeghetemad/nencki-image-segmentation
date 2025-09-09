@@ -1,0 +1,7 @@
+cellpose
+skimage
+openslide
+tifffile
+pandas
+numpy
+matplotlib
