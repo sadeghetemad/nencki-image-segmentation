@@ -1,0 +1,87 @@
+# Dir
+data/
+image/
+qupath/
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+*.env
+*.venv
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+wheels/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+.coverage
+*.cover
+*.py,cover
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Pyre type checker
+.pyre/
+
+# mypy
+.mypy_cache/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# Local data / secrets (adjust as needed)
+*.sqlite3
+*.db
+*.pkl
+*.h5
+*.csv
+*.tsv
+*.json
+*.yaml
+*.yml
+
+# Custom
+# Add any project-specific ignores below
