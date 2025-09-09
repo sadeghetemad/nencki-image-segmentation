@@ -1,7 +1,10 @@
+instanseg-torch
 cellpose
-skimage
-openslide
+scikit-image
+openslide-python
 tifffile
 pandas
 numpy
 matplotlib
+ipykernel
+requests
