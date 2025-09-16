@@ -2,6 +2,7 @@
 data/
 image/
 qupath/
+*.png
 
 
 # Byte-compiled / optimized / DLL files
