@@ -27,8 +27,8 @@ README.md                             # Project documentation
 Clone the repository and install dependencies:  
 
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone git@github.com:Occhipinti-Lab/cell-image-segmentation-and-analysis.git
+cd cell-image-segmentation-and-analysis
 python3 -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
