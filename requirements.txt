@@ -1,11 +1,29 @@
+# Core GPU Framework
+torch==2.3.0+cu121
+torchvision==0.18.0+cu121
+torchaudio==2.3.0+cu121
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# Image segmentation & deep learning tools
 instanseg-torch
 cellpose
+
+# Image I/O & scientific libraries
 scikit-image
-openslide-python
 tifffile
+openslide-python
+
+# Data manipulation
 pandas
-numpy
+
+# Visualization & notebooks
 matplotlib
 ipykernel
+
+# Utilities
 requests
 openpyxl
+openslide-bin
+
+# Optional: only if you use interactive plots or notebooks
+jupyterlab
