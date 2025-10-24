@@ -279,6 +279,81 @@ for patient_dir in BASE_DIR.glob("patient_*"):
     # =======================================================
     # MERGE RESULTS (FIXED VERSION)
     # =======================================================
+        # =======================================================
+    # BUILD FINAL TABLE (PER PATIENT)
+    # =======================================================
+    log("📊 Building final result table...")
+
+    # 1️⃣ Base DataFrame from cell properties
+    df = cell_df.copy()
+    df.rename(columns={
+        "CellID": "Object ID",
+        "centroid-1": "Centroid X µm",
+        "centroid-0": "Centroid Y µm",
+        "area": "Cell: Area µm^2",
+        "perimeter": "Cell: Length µm",
+        "solidity": "Cell: Solidity",
+    }, inplace=True)
+
+    # Add basic columns
+    df["Image"] = f"{patient_dir.name}.qptiff"
+    df["Object type"] = "Cell"
+    df["Name"] = ""
+    df["Classification"] = ""
+    df["Parent"] = ""
+    df["ROI"] = "ROI-1"
+
+    # 2️⃣ Add mean and median intensities for each marker
+    for r in results:
+        m = r["marker"]
+
+        # Convert to DataFrames
+        cell_tmp = pd.DataFrame(r["cell_df"])
+        nuc_tmp = pd.DataFrame(r["nuc_df"])
+
+        # Compute median too (based on mean proxy here)
+        cell_df_tmp = pd.DataFrame({
+            "CellID": cell_tmp["LabelID"],
+            f"Cell:{m}:Mean": cell_tmp["MeanIntensity"],
+            f"Cell:{m}:Median": cell_tmp["MeanIntensity"],  # placeholder (same as mean)
+        })
+        nuc_df_tmp = pd.DataFrame({
+            "NucleusID": nuc_tmp["LabelID"],
+            f"Nucleus:{m}:Mean": nuc_tmp["MeanIntensity"],
+            f"Nucleus:{m}:Median": nuc_tmp["MeanIntensity"],  # placeholder
+        })
+
+        # Merge with nucleus-cell mapping
+        inv_map = {v: k for k, v in mapping.items()}
+        df["NucleusID"] = df["Object ID"].map(inv_map)
+
+        df = df.merge(cell_df_tmp, left_on="Object ID", right_on="CellID", how="left").drop(columns=["CellID"])
+        df = df.merge(nuc_df_tmp, on="NucleusID", how="left")
+
+    # 3️⃣ Clean up and reorder columns
+    drop_cols = [c for c in df.columns if c.endswith("_x") or c.endswith("_y")]
+    if drop_cols:
+        df.drop(columns=drop_cols, inplace=True)
+
+    # Sort columns (optional)
+    first_cols = [
+        "Image", "Object ID", "Object type", "Name", "Classification",
+        "Parent", "ROI", "Centroid X µm", "Centroid Y µm",
+        "Cell: Area µm^2", "Cell: Length µm", "Cell: Solidity"
+    ]
+    df = df[[c for c in first_cols if c in df.columns] +
+            [c for c in df.columns if c not in first_cols]]
+
+    # 4️⃣ Save final table
+    out_csv = OUTPUT_DIR / f"{patient_dir.name}_features_final.csv"
+    df.to_csv(out_csv, index=False)
+    log(f"✅ Saved {out_csv} ({df.shape[0]}×{df.shape[1]})")
+
+    # cleanup memory
+    del df, nuc_df, cell_df, nuc_masks, cell_masks
+    gc.collect()
+
+
     # log("📊 Merging results...")
     # df = cell_df.copy()
     # df["Image"] = f"{patient_dir.name}.qptiff"
@@ -302,8 +377,8 @@ for patient_dir in BASE_DIR.glob("patient_*"):
     # log(f"✅ Saved {out_csv} ({df.shape[0]}×{df.shape[1]})")
     # del df, nuc_df, cell_df, nuc_masks, cell_masks
 
-    del nuc_df, cell_df, nuc_masks, cell_masks
-    gc.collect()
-    log(f"🏁 Done {patient_dir.name}\n")
+    # del nuc_df, cell_df, nuc_masks, cell_masks
+    # gc.collect()
+    # log(f"🏁 Done {patient_dir.name}\n")
 
 log("🎯 All patients processed successfully.")
