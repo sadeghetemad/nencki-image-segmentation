@@ -7,6 +7,7 @@ torchaudio==2.3.0+cu121
 # Image segmentation & deep learning tools
 instanseg-torch
 cellpose
+napari
 
 # Image I/O & scientific libraries
 scikit-image
@@ -18,6 +19,7 @@ pandas
 
 # Visualization & notebooks
 matplotlib
+seaborn
 ipykernel
 
 # Utilities
@@ -27,3 +29,6 @@ openslide-bin
 
 # Optional: only if you use interactive plots or notebooks
 jupyterlab
+
+# Machine Learning
+scikit-learn
