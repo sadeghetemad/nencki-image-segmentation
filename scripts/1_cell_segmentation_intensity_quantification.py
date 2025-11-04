@@ -61,12 +61,6 @@ def match_nucleus_to_cell(nuc_df, cell_df):
 # =======================================================
 # FAST INTENSITY
 # =======================================================
-# def fast_intensity(mask, img):
-#     """Compute mean intensity for each label using regionprops_table (C-optimized)."""
-#     props = regionprops_table(mask, intensity_image=img, properties=("label", "mean_intensity"))
-#     df = pd.DataFrame(props).rename(columns={"label": "LabelID", "mean_intensity": "MeanIntensity"})
-#     return df
-
 def fast_intensity(mask, img, tile_size=8192):
     """
     Compute mean intensity per label using tile-wise accumulation.
@@ -239,23 +233,6 @@ for patient_dir in BASE_DIR.glob("patient_*"):
         cell_df.to_csv(cell_props_csv, index=False)
         log("💾 Cached regionprops safely")
 
-
-    # if cell_props_csv.exists() and nuc_props_csv.exists():
-    #     log("📂 Loading cached regionprops")
-    #     cell_df = pd.read_csv(cell_props_csv)
-    #     nuc_df = pd.read_csv(nuc_props_csv)
-    # else:
-    #     log("📏 Computing regionprops (once)")
-    #     nuc_p = regionprops_table(nuc_masks, intensity_image=nuc_img,
-    #                               properties=("label", "area", "centroid", "solidity", "perimeter"))
-    #     cell_p = regionprops_table(cell_masks, intensity_image=cell_ref,
-    #                                properties=("label", "area", "centroid", "solidity", "perimeter"))
-    #     nuc_df = pd.DataFrame(nuc_p).rename(columns={"label": "NucleusID"})
-    #     cell_df = pd.DataFrame(cell_p).rename(columns={"label": "CellID"})
-    #     nuc_df.to_csv(nuc_props_csv, index=False)
-    #     cell_df.to_csv(cell_props_csv, index=False)
-    #     log("💾 Cached regionprops")
-
     # match nucleus↔cell
     mapping = match_nucleus_to_cell(nuc_df, cell_df)
     nuc_df["CellID"] = nuc_df["NucleusID"].map(mapping)
@@ -328,24 +305,6 @@ for patient_dir in BASE_DIR.glob("patient_*"):
         if "Nucleus:" in col and not any(n in col for n in NUCLEUS_MARKERS):
             df.drop(columns=[col], inplace=True)
 
-
-    # for r in results:
-    #     m = r["marker"]
-
-    #     # Convert to DataFrames
-    #     cell_tmp = pd.DataFrame(r["cell_df"])
-    #     nuc_tmp = pd.DataFrame(r["nuc_df"])
-
-    #     # --- Cell Intensity ---
-    #     cell_mean = pd.Series(cell_tmp["MeanIntensity"].values, index=cell_tmp["LabelID"])
-    #     df[f"Cell: {m}: Mean"] = df["Object ID"].map(cell_mean)
-    #     df[f"Cell: {m}: Median"] = df[f"Cell: {m}: Mean"]
-
-    #     # --- Nucleus Intensity ---
-    #     nuc_mean = pd.Series(nuc_tmp["MeanIntensity"].values, index=nuc_tmp["LabelID"])
-    #     df[f"Nucleus: {m}: Mean"] = df["NucleusID"].map(nuc_mean)
-    #     df[f"Nucleus: {m}: Median"] = df[f"Nucleus: {m}: Mean"]
-
     drop_cols = [c for c in df.columns if c.endswith("_x") or c.endswith("_y")]
     if drop_cols:
         df.drop(columns=drop_cols, inplace=True)
@@ -361,74 +320,6 @@ for patient_dir in BASE_DIR.glob("patient_*"):
     out_csv = OUTPUT_DIR / f"{patient_dir.name}_measurements.csv"
     df.to_csv(out_csv, index=False)
     log(f"✅ Saved HALO-style file: {out_csv} ({df.shape[0]}×{df.shape[1]})")
-
-
-    # log("📊 Building final result table...")
-
-    # # 1️⃣ Base DataFrame from cell properties
-    # df = cell_df.copy()
-    # df.rename(columns={
-    #     "CellID": "Object ID",
-    #     "centroid-1": "Centroid X µm",
-    #     "centroid-0": "Centroid Y µm",
-    #     "area": "Cell: Area µm^2",
-    #     "perimeter": "Cell: Length µm",
-    #     "solidity": "Cell: Solidity",
-    # }, inplace=True)
-
-    # # Add basic columns
-    # df["Image"] = f"{patient_dir.name}.qptiff"
-    # df["Object type"] = "Cell"
-    # df["Name"] = ""
-    # df["Classification"] = ""
-    # df["Parent"] = ""
-    # df["ROI"] = "ROI-1"
-
-    # # 2️⃣ Add mean and median intensities for each marker
-    # for r in results:
-    #     m = r["marker"]
-
-    #     # Convert to DataFrames
-    #     cell_tmp = pd.DataFrame(r["cell_df"])
-    #     nuc_tmp = pd.DataFrame(r["nuc_df"])
-
-    #     # Compute median too (based on mean proxy here)
-    #     cell_df_tmp = pd.DataFrame({
-    #         "CellID": cell_tmp["LabelID"],
-    #         f"Cell:{m}:Mean": cell_tmp["MeanIntensity"],
-    #         f"Cell:{m}:Median": cell_tmp["MeanIntensity"],  # placeholder (same as mean)
-    #     })
-    #     nuc_df_tmp = pd.DataFrame({
-    #         "NucleusID": nuc_tmp["LabelID"],
-    #         f"Nucleus:{m}:Mean": nuc_tmp["MeanIntensity"],
-    #         f"Nucleus:{m}:Median": nuc_tmp["MeanIntensity"],  # placeholder
-    #     })
-
-    #     # Merge with nucleus-cell mapping
-    #     inv_map = {v: k for k, v in mapping.items()}
-    #     df["NucleusID"] = df["Object ID"].map(inv_map)
-
-    #     df = df.merge(cell_df_tmp, left_on="Object ID", right_on="CellID", how="left").drop(columns=["CellID"])
-    #     df = df.merge(nuc_df_tmp, on="NucleusID", how="left")
-
-    # # 3️⃣ Clean up and reorder columns
-    # drop_cols = [c for c in df.columns if c.endswith("_x") or c.endswith("_y")]
-    # if drop_cols:
-    #     df.drop(columns=drop_cols, inplace=True)
-
-    # # Sort columns (optional)
-    # first_cols = [
-    #     "Image", "Object ID", "Object type", "Name", "Classification",
-    #     "Parent", "ROI", "Centroid X µm", "Centroid Y µm",
-    #     "Cell: Area µm^2", "Cell: Length µm", "Cell: Solidity"
-    # ]
-    # df = df[[c for c in first_cols if c in df.columns] +
-    #         [c for c in df.columns if c not in first_cols]]
-
-    # # 4️⃣ Save final table
-    # out_csv = OUTPUT_DIR / f"{patient_dir.name}_features_final.csv"
-    # df.to_csv(out_csv, index=False)
-    # log(f"✅ Saved {out_csv} ({df.shape[0]}×{df.shape[1]})")
 
     # # cleanup memory
     del df, nuc_df, cell_df, nuc_masks, cell_masks
