@@ -1,34 +1,50 @@
-# Core GPU Framework
-torch==2.3.0+cu121
-torchvision==0.18.0+cu121
-torchaudio==2.3.0+cu121
+# ===============================
+# Core GPU Framework (CUDA 12.1)
+# ===============================
+torch==2.1.2+cu121
+torchvision==0.16.2+cu121
+torchaudio==2.1.2+cu121
 --extra-index-url https://download.pytorch.org/whl/cu121
 
-# Image segmentation & deep learning tools
-instanseg-torch
-cellpose
+# ===============================
+# NumPy (MUST be < 2.0)
+# ===============================
+numpy==1.26.4
+
+# ===============================
+# Image segmentation & DL tools
+# ===============================
+cellpose==3.1.1
 napari
 
-# Image I/O & scientific libraries
+# ===============================
+# Image I/O & scientific libs
+# ===============================
 scikit-image
 tifffile
 openslide-python
+openslide-bin
 
+# ===============================
 # Data manipulation
+# ===============================
 pandas
 
+# ===============================
 # Visualization & notebooks
+# ===============================
 matplotlib
 seaborn
 ipykernel
-
-# Utilities
-requests
-openpyxl
-openslide-bin
-
-# Optional: only if you use interactive plots or notebooks
 jupyterlab
 
+# ===============================
 # Machine Learning
+# ===============================
 scikit-learn
+
+# ===============================
+# Utilities
+# ===============================
+requests
+openpyxl
