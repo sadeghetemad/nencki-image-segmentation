@@ -13,25 +13,28 @@ multi-resolution microscopy images** (e.g., `.qptiff`) followed by
 
 ## 📂 Repository Structure
 
+```
+.
 ├── data/
-│ └── features_final/ # Final extracted cellular features
+│   └── features_final/                  # Final extracted cellular features
 │
-├── image/ # Raw microscopy images (.qptiff, etc.)
+├── image/                               # Raw microscopy images (.qptiff, etc.)
 │
 ├── notebooks/
-│ └── downstream_patient_analysis.ipynb
-│ # Feature analysis and visualization
+│   └── downstream_patient_analysis.ipynb
+│                                         # Feature analysis and visualization
 │
 ├── src/
-│ ├── 0_multiple_patient_image_splitter.py
-│ │ # Splits large multi-patient whole-slide images
-│ │
-│ └── 1_cell_segmentation_cellposeSAM.py
-│ # Cell segmentation using Cellpose + SAM
+│   ├── 0_multiple_patient_image_splitter.py
+│   │     # Splits large multi-patient whole-slide images
+│   │
+│   └── 1_cell_segmentation_cellposeSAM.py
+│         # Cell segmentation using Cellpose + SAM
 │
-├── requirements.txt # Python dependencies
-├── README.md # Project documentation
+├── requirements.txt                     # Python dependencies
+├── README.md                            # Project documentation
 └── .gitignore
+```
 
 ------------------------------------------------------------------------
 
