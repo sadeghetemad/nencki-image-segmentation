@@ -5,7 +5,7 @@ import cv2
 from pathlib import Path
 
 # ---------------- config ----------------
-BASE_DIR = Path().resolve()
+BASE_DIR = Path().resolve().parent
 IMAGE_DIR = BASE_DIR / "image"
 SERVER_DIR = IMAGE_DIR / "server"
 OUT_DIR = BASE_DIR / "splitted_images"
