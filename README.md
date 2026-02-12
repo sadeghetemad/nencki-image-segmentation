@@ -1,81 +1,114 @@
-# 🧬 Multi-Resolution Cell Image Segmentation and Analysis  
+# 🧬 Multi-Resolution Cell Image Segmentation and Analysis
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)  
-[![Jupyter](https://img.shields.io/badge/Notebook-Jupyter-orange?logo=jupyter)](https://jupyter.org/)  
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://www.python.org/)
+[![Jupyter](https://img.shields.io/badge/Notebook-Jupyter-orange?logo=jupyter)](https://jupyter.org/)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-This repository provides tools and workflows for **cell segmentation on multi-resolution microscopy images** (e.g., `.qptiff` format), followed by **downstream analysis** of extracted cellular features.  
+This repository provides a complete workflow for **cell segmentation on
+multi-resolution microscopy images** (e.g., `.qptiff`) followed by
+**downstream patient-level feature analysis**.
 
----
+------------------------------------------------------------------------
 
-## 📂 Repository Structure  
+## 📂 Repository Structure
 
-```
-notebooks/
-├── segmentation_by_cellpose.ipynb    # Segmentation using the Cellpose method
-├── segmentation_by_instanseg.ipynb   # Segmentation using the InstanSeg method
-└── patient_analysis.ipynb            # Downstream analysis (statistics, visualization, ML prep)
+. ├── data/ │ └── features_final/ \# Final extracted cellular features │
+├── image/ \# Raw microscopy images (.qptiff, etc.) │ ├── notebooks/ │
+└── downstream_patient_analysis.ipynb │ \# Feature analysis and
+visualization │ ├── src/ │ ├── 0_multiple_patient_image_splitter.py │ │
+\# Splits large multi-patient whole-slide images │ │ │ └──
+1_cell_segmentation_cellposeSAM.py │ \# Cell segmentation using
+Cellpose + SAM │ ├── requirements.txt \# Python dependencies ├──
+README.md \# Project documentation └── .gitignore
 
-requirements.txt                      # Python dependencies  
-README.md                             # Project documentation
-```
+------------------------------------------------------------------------
 
----
+## ⚙️ Installation
 
-## ⚙️ Installation  
+Clone the repository:
 
-Clone the repository and install dependencies:  
-
-```bash
-git clone git@github.com:Occhipinti-Lab/cell-image-segmentation-and-analysis.git
+git clone
+git@github.com:Occhipinti-Lab/cell-image-segmentation-and-analysis.git
 cd cell-image-segmentation-and-analysis
-python3 -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+
+Create and activate virtual environment:
+
+python3 -m venv venv source venv/bin/activate \# Windows:
+venv`\Scripts`{=tex}`\activate`{=tex}
+
+Install dependencies:
+
 pip install -r requirements.txt
-```
 
----
+------------------------------------------------------------------------
 
-## 🚀 Usage  
+## 🚀 Pipeline Workflow
 
-1. Open one of the segmentation notebooks:  
-   ```bash
-   jupyter notebook notebooks/segmentation_by_cellpose.ipynb
-   ```  
-   or  
-   ```bash
-   jupyter notebook notebooks/segmentation_by_instanseg.ipynb
-   ```  
+### 1️⃣ Image Splitting
 
-2. Run segmentation on your `.qptiff` images.  
-3. Use **`patient_analysis.ipynb`** for downstream analysis (mask cleanup, feature extraction, visualization, ML prep).  
+python src/0_multiple_patient_image_splitter.py
 
----
+This step: - Splits large images - Organizes patient-level regions -
+Prepares input for segmentation
 
-## 🔬 Features  
+------------------------------------------------------------------------
 
-- Multi-resolution **QPTIFF image support**  
-- Deep learning–based segmentation (Cellpose, InstanSeg, transformer backends)  
-- Automated tiling for large whole-slide images  
-- Downstream analysis: feature quantification, visualization, and ML-ready outputs  
+### 2️⃣ Cell Segmentation
 
----
+python src/1_cell_segmentation_cellposeSAM.py
 
-## 📊 Example Workflow  
+This step: - Handles multi-resolution microscopy images - Applies
+Cellpose segmentation - Optionally integrates SAM refinement - Generates
+cell masks
 
-1. **Input**: Multi-resolution `.qptiff` images  
-2. **Segmentation** → Cell masks  
-3. **Feature extraction** → Size, shape, intensity, biomarker expression  
-4. **Analysis** → Statistical summaries, visualization, machine learning  
+Final outputs are stored in:
 
----
+data/features_final/
 
-## 🤝 Contributing  
+------------------------------------------------------------------------
 
-Contributions, pull requests, and discussions are welcome!  
+### 3️⃣ Downstream Patient Analysis
 
----
+jupyter notebook notebooks/downstream_patient_analysis.ipynb
 
-## 📜 License  
+This notebook performs: - Mask cleanup - Feature extraction (size,
+morphology, intensity) - Patient-level aggregation - Statistical
+summaries - Visualization 
 
-MIT License — © Ochipinti Lab  
+------------------------------------------------------------------------
+
+## 🔬 Key Features
+
+-   Multi-resolution QPTIFF support
+-   Automated tiling for whole-slide images
+-   Deep learning-based segmentation (Cellpose + SAM)
+-   Feature quantification
+-   Patient-level aggregation
+
+------------------------------------------------------------------------
+
+## 🧠 Requirements
+
+-   Python 3.10+
+-   NumPy
+-   Pandas
+-   Cellpose
+-   Jupyter Notebook
+
+See `requirements.txt` for full dependency list.
+
+------------------------------------------------------------------------
+
+## 🤝 Contributing
+
+Pull requests and discussions are welcome.
+
+Please: - Keep scripts modular - Document functions clearly - Clear
+notebook outputs before committing
+
+------------------------------------------------------------------------
+
+## 📜 License
+
+MIT License --- © Occhipinti Lab
