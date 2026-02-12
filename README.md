@@ -13,33 +13,47 @@ multi-resolution microscopy images** (e.g., `.qptiff`) followed by
 
 ## 📂 Repository Structure
 
-. ├── data/ │ └── features_final/ \# Final extracted cellular features │
-├── image/ \# Raw microscopy images (.qptiff, etc.) │ ├── notebooks/ │
-└── downstream_patient_analysis.ipynb │ \# Feature analysis and
-visualization │ ├── src/ │ ├── 0_multiple_patient_image_splitter.py │ │
-\# Splits large multi-patient whole-slide images │ │ │ └──
-1_cell_segmentation_cellposeSAM.py │ \# Cell segmentation using
-Cellpose + SAM │ ├── requirements.txt \# Python dependencies ├──
-README.md \# Project documentation └── .gitignore
+├── data/
+│ └── features_final/ # Final extracted cellular features
+│
+├── image/ # Raw microscopy images (.qptiff, etc.)
+│
+├── notebooks/
+│ └── downstream_patient_analysis.ipynb
+│ # Feature analysis and visualization
+│
+├── src/
+│ ├── 0_multiple_patient_image_splitter.py
+│ │ # Splits large multi-patient whole-slide images
+│ │
+│ └── 1_cell_segmentation_cellposeSAM.py
+│ # Cell segmentation using Cellpose + SAM
+│
+├── requirements.txt # Python dependencies
+├── README.md # Project documentation
+└── .gitignore
 
 ------------------------------------------------------------------------
 
 ## ⚙️ Installation
 
-Clone the repository:
-
-git clone
-git@github.com:Occhipinti-Lab/cell-image-segmentation-and-analysis.git
+```bash
+# Clone the repository
+git clone git@github.com:Occhipinti-Lab/cell-image-segmentation-and-analysis.git
 cd cell-image-segmentation-and-analysis
 
-Create and activate virtual environment:
+# Create virtual environment
+python3 -m venv venv
 
-python3 -m venv venv source venv/bin/activate \# Windows:
-venv`\Scripts`{=tex}`\activate`{=tex}
+# Activate virtual environment
+source venv/bin/activate        # On Windows: venv\Scripts\activate
 
-Install dependencies:
+# Upgrade pip (recommended)
+pip install --upgrade pip
 
+# Install dependencies
 pip install -r requirements.txt
+```
 
 ------------------------------------------------------------------------
 
